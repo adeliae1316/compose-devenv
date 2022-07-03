@@ -246,6 +246,10 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 
         - Create a bucket named `growi` .
 
+            ```bash
+            docker run -it --entrypoint=/bin/bash minio/mc:latest -c "/usr/bin/mc config host add minio http://192.168.77.48:9000 minioadmin minioadmin-pswd && /usr/bin/mc mb minio/growi"
+            ```
+
 4. Open in browser.
 
     - Growi
