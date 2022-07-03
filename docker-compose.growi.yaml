@@ -31,7 +31,7 @@ services:
       - ELASTICSEARCH_URI=http://elasticsearch:9200/growi
       - APP_SITE_URL=http://${_HOSTNAME}:${_GROWI_HTTP_PORT}
       - FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE=true
-      - FILE_UPLOAD=mongodb
+      - FILE_UPLOAD=aws
       - HACKMD_URI=http://${_HOSTNAME}:${_CODIMD_HTTP_PORT}
       - HACKMD_URI_FOR_SERVER=http://hackmd:3000
       - DRAWIO_URI=http://${_HOSTNAME}:${_DRAWIO_HTTP_PORT}
@@ -81,6 +81,13 @@ services:
       - GROWI_URI=http://${_HOSTNAME}:${_GROWI_HTTP_PORT}
       - CMD_DB_URL=mysql://hackmd:hackmd-pswd@mariadb:3306/hackmd
       - CMD_CSP_ENABLE=false
+      - CMD_IMAGE_UPLOAD_TYPE=minio
+      - CMD_S3_BUCKET=hackmd
+      - CMD_MINIO_ACCESS_KEY=minioadmin
+      - CMD_MINIO_SECRET_KEY=minioadmin-pswd
+      - CMD_MINIO_ENDPOINT=${_HOSTNAME}
+      - CMD_MINIO_PORT=9000
+      - CMD_MINIO_SECURE=false
     restart: unless-stopped
     ports:
       - ${_CODIMD_HTTP_PORT}:3000

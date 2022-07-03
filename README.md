@@ -16,7 +16,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 - User management service
     - Keycloak
 
-    ![component.drawio.png](doc/images/component.drawio.png)
+    ![component.drawio](doc/images/component.drawio.png)
 
 ## Features
 
@@ -61,7 +61,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     Execute the following command.
 
     ```bash
-    docker-compose -f ./docker-compose.yaml -f ./docker-compose.gitlab.yaml -f ./docker-compose.growi.yaml up -d
+    docker-compose -f ./docker-compose.yaml -f ./docker-compose.gitlab.yaml -f ./docker-compose.growi.yaml -f ./docker-compose.minio.yaml up -d
     ```
 
     Wait a little until the following log is output.  
@@ -225,6 +225,27 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
                     |firstname|FirstName|First Name|firstName|
                     |lastname|LastName|Last Name|lastName|
 
+    - Growi
+
+        - Create a administrative user.
+
+        - `App Settings`
+
+            |Section|key|value|
+            |---|---|---|
+            |File Upload Settings|File Delivery Method|`Internal System Relay`|
+            ||Region|`ap-northeast-1`|
+            ||Custom endpoint|`growi`|
+            ||Bucket name|`http://192.168.77.48:9000`|
+            ||Access key ID|`minioadmin`|
+            ||Secret access key|`minioadmin-pswd`|
+
+        ![growi-minio](doc/images/growi-minio.png)
+
+    - MinIO
+
+        - Create a bucket named `growi` .
+
 4. Open in browser.
 
     - Growi
@@ -243,6 +264,10 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 
         http://192.168.XXX.YYY:20082
 
+    - MinIO
+
+        http://192.168.XXX.YYY:9000
+
 ## Thanks and References
 
 - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
@@ -260,3 +285,6 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 - [hackmdio/hackmd](https://hub.docker.com/r/hackmdio/hackmd)
     - https://github.com/weseek/growi-docker-compose/tree/master/examples/integrate-with-hackmd
     - https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html
+    - https://hackmd.io/c/codimd-documentation/%2Fs%2Fcodimd-configuration
+- [quay.io/minio/minio](https://quay.io/repository/minio/minio)
+    - https://docs.min.io/docs/deploy-minio-on-docker-compose.html
