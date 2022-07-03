@@ -1,0 +1,112 @@
+version: '3.6'
+
+services:
+  app:
+    build:
+      context: ./growi
+    container_name: growi
+    ports:
+      - '${_GROWI_HTTP_PORT}:3000'
+    links:
+      - mongo:mongo
+      - elasticsearch:elasticsearch
+    depends_on:
+      - mongo
+      - elasticsearch
+    external_links:
+      - keycloak
+    environment:
+      # saml configutation
+      - SAML_ENABLED=true # issue: https://github.com/weseek/growi-docker-compose/issues/62
+      - SAML_ENTRY_POINT=${_KEYCLOAK_WIKI_URL}
+      - SAML_ISSUER=${_KEYCLOAK_CLIENT_WIKI}
+      - SAML_ATTR_MAPPING_ID=id
+      - SAML_ATTR_MAPPING_USERNAME=username
+      - SAML_ATTR_MAPPING_MAIL=email
+      - SAML_ATTR_MAPPING_FIRST_NAME=firstName
+      - SAML_ATTR_MAPPING_LAST_NAME=lastName
+      - SAML_CERT=${_KEYCLOAK_WIKI_PEM}
+      # common configuration
+      - MONGO_URI=mongodb://mongo:27017/growi
+      - ELASTICSEARCH_URI=http://elasticsearch:9200/growi
+      - APP_SITE_URL=http://${_HOSTNAME}:${_GROWI_HTTP_PORT}
+      - FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE=true
+      - FILE_UPLOAD=mongodb
+      - HACKMD_URI=http://${_HOSTNAME}:${_CODIMD_HTTP_PORT}
+      - HACKMD_URI_FOR_SERVER=http://hackmd:3000
+    restart: unless-stopped
+    entrypoint: "dockerize -wait tcp://mongo:27017 -wait tcp://elasticsearch:9200 -timeout 60s /docker-entrypoint.sh"
+    command:
+      [
+        "yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"
+      ]
+    volumes:
+      - growi_data:/data
+
+  mongo:
+    image: mongo:4.4
+    container_name: growi_db
+    restart: unless-stopped
+    volumes:
+      - mongo_configdb:/data/configdb
+      - mongo_db:/data/db
+
+  elasticsearch:
+    build:
+      context: ./growi/elasticsearch
+    container_name: growi_es
+    environment:
+      - bootstrap.memory_lock=true
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m # increase amount if you have enough memory
+      - LOG4J_FORMAT_MSG_NO_LOOKUPS=true # CVE-2021-44228 mitigation for Elasticsearch <= 6.8.20/7.16.0
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    restart: unless-stopped
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - ./growi/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  hackmd:
+    build:
+      context: ./growi/hackmd
+    container_name: codimd
+    environment:
+      - GROWI_URI=http://${_HOSTNAME}:${_GROWI_HTTP_PORT}
+      - CMD_DB_URL=mysql://hackmd:hackmd-pswd@mariadb:3306/hackmd
+      - CMD_CSP_ENABLE=false
+    restart: unless-stopped
+    ports:
+      - ${_CODIMD_HTTP_PORT}:3000
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:10.3
+    container_name: codimd_db
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    environment:
+      - MYSQL_USER=hackmd
+      - MYSQL_PASSWORD=hackmd-pswd
+      - MYSQL_DATABASE=hackmd
+      - MARIADB_ROOT_PASSWORD=hackmd-pswd
+    restart: unless-stopped
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+networks:
+  default:
+    name: internal_wiki
+    driver: bridge
+
+volumes:
+  growi_data:
+  mongo_configdb:
+  mongo_db:
+  elasticsearch_data:
+  mariadb_data:

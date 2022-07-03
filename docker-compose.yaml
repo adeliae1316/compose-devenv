@@ -1,0 +1,77 @@
+version: '3.6'
+
+services:
+
+  openldap:
+    image: osixia/openldap:latest
+    container_name: openldap
+    environment:
+      LDAP_LOG_LEVEL: '256'
+      LDAP_ORGANISATION: ${_LDAP_ORGANISATION}
+      LDAP_DOMAIN: ${_LDAP_DOMAIN}
+      LDAP_BASE_DN: ''
+      LDAP_ADMIN_PASSWORD: 'admin'
+      LDAP_CONFIG_PASSWORD: 'config'
+      LDAP_READONLY_USER: 'false'
+      LDAP_RFC2307BIS_SCHEMA: 'false'
+      LDAP_BACKEND: 'mdb'
+      LDAP_TLS: 'false'
+      LDAP_REPLICATION: 'false'
+      KEEP_EXISTING_CONFIG: 'false'
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: 'true'
+    restart: unless-stopped
+    volumes:
+      - openldap_ldap:/var/lib/ldap
+      - openldap_slapd:/etc/ldap/slapd.d
+      - ./openldap/init.ldif:/tmp/init.ldif:ro
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+      PHPLDAPADMIN_HTTPS: 'false'
+    restart: unless-stopped
+    ports:
+      - '${_LDAP_ADMIN_PORT}:80'
+    depends_on:
+      - openldap
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: ${_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${_POSTGRES_PASSWORD}
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak_db
+      KC_DB_USERNAME: ${_POSTGRES_USER}
+      KC_DB_PASSWORD: ${_POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${_KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${_KEYCLOAK_ADMIN_PASSWORD}
+    restart: unless-stopped
+    ports:
+      - ${_KEYCLOAK_HTTP_PORT}:8080
+    command: 'start-dev'
+    depends_on:
+      - postgres
+      - openldap
+
+networks:
+  default:
+    name: internal_sso
+    driver: bridge
+
+volumes:
+  openldap_ldap:
+  openldap_slapd:
+  postgres_data:

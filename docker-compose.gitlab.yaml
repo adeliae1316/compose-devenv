@@ -1,0 +1,65 @@
+version: '3.6'
+
+services:
+
+  web:
+    image: 'gitlab/gitlab-ce:latest'
+    container_name: gitlab-ce
+    environment:
+      GITLAB_SKIP_UNMIGRATED_DATA_CHECK: 'true'
+      GITLAB_OMNIBUS_CONFIG: |
+        # fix root password
+        gitlab_rails['initial_root_password'] = '${_GITLAB_ROOT_PSWD}'
+        # enable frontpage
+        external_url 'http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}'
+        nginx['listen_port'] = 80
+        # enable pages
+        pages_external_url 'http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}'
+        gitlab_pages['enable'] = true
+        # enable lfs
+        gitlab_rails['lfs_enabled'] = true
+        # enable saml
+        # ref: https://docs.gitlab.com/ee/integration/saml.html
+        gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
+        gitlab_rails['omniauth_block_auto_created_users'] = false
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "saml",
+            label: "Keycloak", # optional label for login button, defaults to "Saml"
+            args: {
+              assertion_consumer_service_url: "http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}/users/auth/saml/callback",
+              idp_cert_fingerprint: "${_KEYCLOAK_GL_FP}",
+              idp_sso_target_url: "${_KEYCLOAK_GL_URL}",
+              issuer: "${_KEYCLOAK_CLIENT_GITL}",
+              name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+            }
+          }
+        ]
+        # Add any other gitlab.rb configuration here, each on its own line
+    restart: unless-stopped
+    ports:
+      - '${_GITLAB_HTTP_PORT}:80'
+      - '${_GITLAB_SSH_PORT}:22'
+    volumes:
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
+      - ./gitlab/entrypoint.sh:/code/entrypoint.sh:ro
+    entrypoint: /code/entrypoint.sh
+    shm_size: '256m'
+    external_links:
+      - keycloak
+    deploy:
+      resources:
+        limits:
+          memory: 2g
+
+networks:
+  default:
+    name: internal_git
+    driver: bridge
+
+volumes:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
