@@ -34,6 +34,7 @@ services:
       - FILE_UPLOAD=mongodb
       - HACKMD_URI=http://${_HOSTNAME}:${_CODIMD_HTTP_PORT}
       - HACKMD_URI_FOR_SERVER=http://hackmd:3000
+      - DRAWIO_URI=http://${_HOSTNAME}:${_DRAWIO_HTTP_PORT}
     restart: unless-stopped
     entrypoint: "dockerize -wait tcp://mongo:27017 -wait tcp://elasticsearch:9200 -timeout 60s /docker-entrypoint.sh"
     command:
@@ -98,6 +99,13 @@ services:
     restart: unless-stopped
     volumes:
       - mariadb_data:/var/lib/mysql
+
+  drawio:
+    image: jgraph/drawio:latest
+    container_name: drawio
+    restart: unless-stopped
+    ports:
+      - ${_DRAWIO_HTTP_PORT}:8080
 
 networks:
   default:
