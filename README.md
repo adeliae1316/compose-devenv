@@ -44,16 +44,16 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 
 1. Edit [env](.env) file.
 
-    - Environment variable `_KEYCLOAK_GL_FP` for GitLab
+    - Environment variable `_KEYCLOAK_GITL_FP` for GitLab
 
         ```bash
-        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "-----BEGIN CERTIFICATE-----\n%s\n-----END CERTIFICATE-----\n" $(cat) | openssl x509 -sha1 -fingerprint -noout | sed -e 's/^.*sha1 Fingerprint=\(.*\)/\1/g' | printf -- "\n_KEYCLOAK_GL_FP='%s'\n\n" $(cat)
+        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "-----BEGIN CERTIFICATE-----\n%s\n-----END CERTIFICATE-----\n" $(cat) | openssl x509 -sha1 -fingerprint -noout | sed -e 's/^.*sha1 Fingerprint=\(.*\)/\1/g' | printf -- "_KEYCLOAK_GITL_FP='%s'\n" $(cat)  >> .env
         ```
     
     - Environment variable `_KEYCLOAK_WIKI_PEM` for Growi
 
         ```bash
-        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "\n_KEYCLOAK_WIKI_PEM='%s'\n\n" $(cat)
+        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "_KEYCLOAK_WIKI_PEM='%s'\n" $(cat) >> .env
         ```
 
 2. Launch the containers.
@@ -290,5 +290,6 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://github.com/weseek/growi-docker-compose/tree/master/examples/integrate-with-hackmd
     - https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html
     - https://hackmd.io/c/codimd-documentation/%2Fs%2Fcodimd-configuration
+    - https://hackmd.io/s/codimd-image-storage-minio
 - [quay.io/minio/minio](https://quay.io/repository/minio/minio)
     - https://docs.min.io/docs/deploy-minio-on-docker-compose.html

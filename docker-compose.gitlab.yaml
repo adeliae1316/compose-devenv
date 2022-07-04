@@ -28,8 +28,8 @@ services:
             label: "Keycloak", # optional label for login button, defaults to "Saml"
             args: {
               assertion_consumer_service_url: "http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}/users/auth/saml/callback",
-              idp_cert_fingerprint: "${_KEYCLOAK_GL_FP}",
-              idp_sso_target_url: "${_KEYCLOAK_GL_URL}",
+              idp_cert_fingerprint: "${_KEYCLOAK_GITL_FP}",
+              idp_sso_target_url: "${_KEYCLOAK_GITL_URL}",
               issuer: "${_KEYCLOAK_CLIENT_GITL}",
               name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
             }
