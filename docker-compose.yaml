@@ -15,7 +15,7 @@ services:
       LDAP_READONLY_USER: 'false'
       LDAP_RFC2307BIS_SCHEMA: 'false'
       LDAP_BACKEND: 'mdb'
-      LDAP_TLS: 'false'
+      LDAP_TLS: 'true'
       LDAP_REPLICATION: 'false'
       KEEP_EXISTING_CONFIG: 'false'
       LDAP_REMOVE_CONFIG_AFTER_SETUP: 'true'
@@ -24,18 +24,25 @@ services:
       - openldap_ldap:/var/lib/ldap
       - openldap_slapd:/etc/ldap/slapd.d
       - ./openldap/init.ldif:/tmp/init.ldif:ro
+      - ./certs/ldap.crt:/container/service/slapd/assets/certs/ldap.crt:rw
+      - ./certs/ldap.key:/container/service/slapd/assets/certs/ldap.key:rw
+      - ./certs/rootCA.pem:/container/service/slapd/assets/certs/ca.crt:rw
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: phpldapadmin
     environment:
       PHPLDAPADMIN_LDAP_HOSTS: openldap
-      PHPLDAPADMIN_HTTPS: 'false'
+      PHPLDAPADMIN_HTTPS: 'true'
     restart: unless-stopped
     ports:
-      - '${_LDAP_ADMIN_PORT}:80'
+      - '${_LDAPADMIN_HTTPS_PORT}:443'
     depends_on:
       - openldap
+    volumes:
+      - ./certs/ldapadmin.crt:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.crt:rw
+      - ./certs/ldapadmin.key:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.key:rw
+      - ./certs/rootCA.pem:/container/service/phpldapadmin/assets/apache2/certs/ca.crt:rw
 
   postgres:
     image: postgres:latest
@@ -58,13 +65,19 @@ services:
       KC_DB_PASSWORD: ${_POSTGRES_PASSWORD}
       KEYCLOAK_ADMIN: ${_KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${_KEYCLOAK_ADMIN_PASSWORD}
+      # If use quay.io/keycloak/keycloak, need to specify the path explicitly.
+      KC_HTTPS_CERTIFICATE_FILE: /etc/x509/https/tls.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /etc/x509/https/tls.key
     restart: unless-stopped
     ports:
-      - ${_KEYCLOAK_HTTP_PORT}:8080
+      - ${_KEYCLOAK_HTTPS_PORT}:8443
     command: 'start-dev'
     depends_on:
       - postgres
       - openldap
+    volumes:
+      - ./certs/keycloak.crt:/etc/x509/https/tls.crt:rw
+      - ./certs/keycloak.key:/etc/x509/https/tls.key:rw
 
 networks:
   default:
