@@ -11,10 +11,11 @@ x-minio-common:
     - "9000"
     - "9001"
   environment:
-    MINIO_ROOT_USER: minioadmin
-    MINIO_ROOT_PASSWORD: minioadmin-pswd
+    MINIO_ROOT_USER: ${_MINIO_ROOT_USER}
+    MINIO_ROOT_PASSWORD: ${_MINIO_ROOT_PASSWORD}
     MINIO_SITE_NAME: storage
     MINIO_SITE_REGION: ap-northeast-1
+    MINIO_BROWSER_REDIRECT_URL: https://${_HOSTNAME}:${_MINIO_CONSOLE_HTTPS_PORT}
   healthcheck:
     test:
       [
@@ -69,9 +70,11 @@ services:
     container_name: minio_nginx
     volumes:
       - ./minio/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs/minio.crt:/certs/minio.crt:ro
+      - ./certs/minio.key:/certs/minio.key:ro
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - ${_MINIO_SERVER_HTTPS_PORT}:9000
+      - ${_MINIO_CONSOLE_HTTPS_PORT}:9001
     depends_on:
       - minio1
       - minio2

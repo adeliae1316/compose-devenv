@@ -283,6 +283,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://www.keycloak.org/getting-started/getting-started-docker
     - https://www.keycloak.org/server/containers
     - https://www.keycloak.org/guides#server
+    - https://stackoverflow.com/a/72759904
 - [weseek/growi-docker-compose](https://github.com/weseek/growi-docker-compose.git)
     - Fork as [adeliae1316/growi-docker-compose](https://github.com/adeliae1316/growi-docker-compose.git) and use
     - https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html
@@ -293,3 +294,5 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://hackmd.io/s/codimd-image-storage-minio
 - [quay.io/minio/minio](https://quay.io/repository/minio/minio)
     - https://docs.min.io/docs/deploy-minio-on-docker-compose.html
+    - https://docs.min.io/docs/minio-quickstart-guide.html
+        - about `MINIO_BROWSER_REDIRECT_URL`

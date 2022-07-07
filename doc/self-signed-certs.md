@@ -20,6 +20,7 @@
 
     ```bash
     _MKCERT_CA_OU='Workspace self-signed CA' mkcert -install
+
     mkdir -p certs && cd certs && cp $(mkcert -CAROOT)/rootCA.pem .
     ```
 
@@ -27,7 +28,16 @@
 
     ```bash
     mkdir -p certs && cd certs
+
     _MKCERT_CERT_OU='192.168.77.48 (vm)' mkcert localhost 192.168.77.48 127.0.0.1
-    cp localhost+2.pem ldap.crt && cp localhost+2.pem ldapadmin.crt && cp localhost+2.pem keycloak.crt
-    cp localhost+2-key.pem ldap.key && cp localhost+2-key.pem ldapadmin.key && cp localhost+2-key.pem keycloak.key
+
+    cp localhost+2.pem ldap.crt \
+    && cp localhost+2.pem ldapadmin.crt \
+    && cp localhost+2.pem keycloak.crt \
+    && cp localhost+2.pem minio.crt
+
+    cp localhost+2-key.pem ldap.key \
+    && cp localhost+2-key.pem ldapadmin.key \
+    && cp localhost+2-key.pem keycloak.key \
+    && cp localhost+2-key.pem minio.key
     ```
