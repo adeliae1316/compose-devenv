@@ -291,7 +291,6 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://www.keycloak.org/guides#server
     - https://stackoverflow.com/a/72759904
 - [weseek/growi-docker-compose](https://github.com/weseek/growi-docker-compose.git)
-    - Fork as [adeliae1316/growi-docker-compose](https://github.com/adeliae1316/growi-docker-compose.git) and use
     - https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html
 - [hackmdio/hackmd](https://hub.docker.com/r/hackmdio/hackmd)
     - https://github.com/weseek/growi-docker-compose/tree/master/examples/integrate-with-hackmd
