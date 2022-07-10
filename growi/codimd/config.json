@@ -1,0 +1,11 @@
+{
+  "production": {
+    "useSSL": false,
+    "protocolUseSSL": false,
+    "urlAddPort": true,
+    "allowEmailRegister": false,
+    "email": false,
+    "sessionName": "connect.codimd.sid",
+    "imageUploadType": "minio"
+  }
+}

@@ -3,7 +3,7 @@ version: '3.6'
 services:
   growi:
     build:
-      context: ./growi
+      context: ./growi-docker-compose
     container_name: growi
     links:
       - mongo:mongo
@@ -62,7 +62,7 @@ services:
 
   elasticsearch:
     build:
-      context: ./growi/elasticsearch
+      context: ./growi-docker-compose/elasticsearch
     container_name: growi_es
     environment:
       - bootstrap.memory_lock=true
@@ -83,7 +83,7 @@ services:
 
   hackmd:
     build:
-      context: ./growi/hackmd
+      context: ./growi-docker-compose/hackmd
     container_name: codimd
     environment:
       - GROWI_URI=https://${_HOSTNAME}:${_GROWI_HTTPS_PORT}
@@ -97,6 +97,8 @@ services:
       - CMD_MINIO_PORT=9000
       - CMD_MINIO_SECURE=false
     restart: unless-stopped
+    volumes:
+      - ./growi/codimd/config.json:/codimd/config.json:ro
     depends_on:
       - mariadb
 
