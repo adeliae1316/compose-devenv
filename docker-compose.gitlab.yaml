@@ -9,7 +9,7 @@ services:
       GITLAB_SKIP_UNMIGRATED_DATA_CHECK: 'true'
       GITLAB_OMNIBUS_CONFIG: |
         # fix root password
-        gitlab_rails['initial_root_password'] = '${_GITLAB_ROOT_PSWD}'
+        gitlab_rails['initial_root_password'] = '${_GITLAB_ROOT_PASSWORD}'
         # enable frontpage
         external_url 'http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}'
         nginx['listen_port'] = 80

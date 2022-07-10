@@ -11,15 +11,17 @@ def getEnv(key):
 
 # generate config json
 
-with open(os.path.join(_PY_DIR, 'templete.json')) as f:
+with open(os.path.join(_PY_DIR, 'template.json')) as f:
   content = f.read()
 
-content = content.replace('@REALM_NAME@', getEnv('_KEYCLOAK_REALMS'))
-content = content.replace('@GITLAB_URL@', 'http://{0}:{1}'.format(getEnv('_HOSTNAME'), getEnv('_GITLAB_HTTP_PORT')))
-content = content.replace('@GROWI_URL@', 'https://{0}:{1}'.format(getEnv('_HOSTNAME'), getEnv('_GROWI_HTTPS_PORT')))
-content = content.replace('@USERS_DN@', getEnv('_SEARCH_BASE_DN'))
-content = content.replace('@BIND_DN@', getEnv('_BIND_USER_DN'))
-content = content.replace('@BIND_CREDENTIAL@', getEnv('_BIND_USER_PSWD'))
+content = content.replace('${_KEYCLOAK_REALMS}', getEnv('_KEYCLOAK_REALMS'))
+content = content.replace('${_KEYCLOAK_CLIENT_GITL}', getEnv('_KEYCLOAK_CLIENT_GITL'))
+content = content.replace('${_KEYCLOAK_CLIENT_WIKI}', getEnv('_KEYCLOAK_CLIENT_WIKI'))
+content = content.replace('${GITLAB_URL}', 'https://{0}:{1}'.format(getEnv('_HOSTNAME'), getEnv('_GITLAB_HTTPS_PORT')))
+content = content.replace('${GROWI_URL}', 'https://{0}:{1}'.format(getEnv('_HOSTNAME'), getEnv('_GROWI_HTTPS_PORT')))
+content = content.replace('${_SEARCH_BASE_DN}', getEnv('_SEARCH_BASE_DN'))
+content = content.replace('${_BIND_USER_DN}', getEnv('_BIND_USER_DN'))
+content = content.replace('${_BIND_USER_PASSWORD}', getEnv('_BIND_USER_PASSWORD'))
 
 with open(os.path.join(_PY_DIR, 'import.json'), mode='w') as f:
     f.write(content)

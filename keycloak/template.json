@@ -1,0 +1,309 @@
+{
+  "realm": "${_KEYCLOAK_REALMS}",
+  "enabled": true,
+  "loginWithEmailAllowed": false,
+  "clients": [
+    {
+      "clientId": "${_KEYCLOAK_CLIENT_GITL}",
+      "enabled": true,
+      "rootUrl": "${GITLAB_URL}/",
+      "adminUrl": "${GITLAB_URL}/users/auth/saml/callback",
+      "redirectUris": [
+        "${GITLAB_URL}/*"
+      ],
+      "webOrigins": [],
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "attributes": {
+        "saml.authnstatement": "true",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_signature_canonicalization_method": "http://www.w3.org/2001/10/xml-exc-c14n#",
+        "saml.client.signature": "true",
+        "saml.force.post.binding": "true",
+        "saml_idp_initiated_sso_url_name": "${_KEYCLOAK_CLIENT_GITL}",
+        "saml_name_id_format": "persistent"
+      },
+      "protocolMappers": [
+        {
+          "name": "last_name",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "LastName",
+            "friendly.name": "Last Name",
+            "attribute.name": "last_name"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "Email",
+            "friendly.name": "Email",
+            "attribute.name": "email"
+          }
+        },
+        {
+          "name": "name",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "Username",
+            "friendly.name": "Username",
+            "attribute.name": "name"
+          }
+        },
+        {
+          "name": "first_name",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "FirstName",
+            "friendly.name": "First Name",
+            "attribute.name": "first_name"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "${_KEYCLOAK_CLIENT_WIKI}",
+      "enabled": true,
+      "rootUrl": "${GROWI_URL}/",
+      "adminUrl": "${GROWI_URL}/users/auth/saml/callback",
+      "redirectUris": [
+        "${GROWI_URL}/*"
+      ],
+      "webOrigins": [],
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "attributes": {
+        "saml.authnstatement": "true",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_signature_canonicalization_method": "http://www.w3.org/2001/10/xml-exc-c14n#",
+        "saml.client.signature": "true",
+        "saml.force.post.binding": "true",
+        "saml_idp_initiated_sso_url_name": "${_KEYCLOAK_CLIENT_WIKI}",
+        "saml_name_id_format": "username"
+      },
+      "protocolMappers": [
+        {
+          "name": "lastname",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "LastName",
+            "friendly.name": "Last Name",
+            "attribute.name": "lastName"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "Email",
+            "friendly.name": "Email",
+            "attribute.name": "email"
+          }
+        },
+        {
+          "name": "name",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "Username",
+            "friendly.name": "Username",
+            "attribute.name": "username"
+          }
+        },
+        {
+          "name": "id",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "Id",
+            "friendly.name": "ID",
+            "attribute.name": "id"
+          }
+        },
+        {
+          "name": "firstname",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "Basic",
+            "user.attribute": "FirstName",
+            "friendly.name": "First Name",
+            "attribute.name": "firstName"
+          }
+        }
+      ]
+    }
+  ],
+  "components": {
+    "org.keycloak.storage.UserStorageProvider": [
+      {
+        "name": "ldap",
+        "providerId": "ldap",
+        "subComponents": {
+          "org.keycloak.storage.ldap.mappers.LDAPStorageMapper": [
+            {
+              "name": "username",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": [
+                  "uid"
+                ],
+                "is.mandatory.in.ldap": [
+                  "true"
+                ],
+                "always.read.value.from.ldap": [
+                  "false"
+                ],
+                "read.only": [
+                  "true"
+                ],
+                "user.model.attribute": [
+                  "username"
+                ]
+              }
+            },
+            {
+              "name": "first name",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": [
+                  "givenName"
+                ],
+                "is.mandatory.in.ldap": [
+                  "true"
+                ],
+                "is.binary.attribute": [
+                  "false"
+                ],
+                "read.only": [
+                  "true"
+                ],
+                "always.read.value.from.ldap": [
+                  "true"
+                ],
+                "user.model.attribute": [
+                  "firstName"
+                ]
+              }
+            },
+            {
+              "name": "email",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": [
+                  "mail"
+                ],
+                "is.mandatory.in.ldap": [
+                  "false"
+                ],
+                "read.only": [
+                  "true"
+                ],
+                "always.read.value.from.ldap": [
+                  "false"
+                ],
+                "user.model.attribute": [
+                  "email"
+                ]
+              }
+            },
+            {
+              "name": "last name",
+              "providerId": "user-attribute-ldap-mapper",
+              "config": {
+                "ldap.attribute": [
+                  "sn"
+                ],
+                "is.mandatory.in.ldap": [
+                  "true"
+                ],
+                "read.only": [
+                  "true"
+                ],
+                "always.read.value.from.ldap": [
+                  "true"
+                ],
+                "user.model.attribute": [
+                  "lastName"
+                ]
+              }
+            }
+          ]
+        },
+        "config": {
+          "enabled": [
+            "true"
+          ],
+          "importEnabled": [
+            "true"
+          ],
+          "editMode": [
+            "WRITABLE"
+          ],
+          "syncRegistrations": [
+            "true"
+          ],
+          "vendor": [
+            "other"
+          ],
+          "usernameLDAPAttribute": [
+            "uid"
+          ],
+          "rdnLDAPAttribute": [
+            "cn"
+          ],
+          "uuidLDAPAttribute": [
+            "entryUUID"
+          ],
+          "userObjectClasses": [
+            "inetOrgPerson, organizationalPerson"
+          ],
+          "connectionUrl": [
+            "ldap://openldap"
+          ],
+          "usersDn": [
+            "${_SEARCH_BASE_DN}"
+          ],
+          "searchScope": [
+            "2"
+          ],
+          "authType": [
+            "simple"
+          ],
+          "bindDn": [
+            "${_BIND_USER_DN}"
+          ],
+          "bindCredential": [
+            "${_BIND_USER_PASSWORD}"
+          ]
+        }
+      }
+    ]
+  }
+}

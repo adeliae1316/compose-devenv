@@ -290,6 +290,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://www.keycloak.org/server/containers
     - https://www.keycloak.org/guides#server
     - https://stackoverflow.com/a/72759904
+    - https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.1/html/server_administration_guide/admin_cli
 - [weseek/growi-docker-compose](https://github.com/weseek/growi-docker-compose.git)
     - https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html
 - [hackmdio/hackmd](https://hub.docker.com/r/hackmdio/hackmd)
@@ -303,3 +304,5 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
         - about `MINIO_BROWSER_REDIRECT_URL`
 - [mongo-express](https://hub.docker.com/_/mongo-express)
 - [nginx](https://hub.docker.com/_/nginx)
+- [dockerize](https://hub.docker.com/r/jwilder/dockerize)
+- [portainer-ce](https://hub.docker.com/r/portainer/portainer-ce)
