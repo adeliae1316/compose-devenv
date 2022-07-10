@@ -282,15 +282,15 @@
     {
       "id": "ddbae60a-3d17-4ad5-8feb-ac927c752050",
       "clientId": "gitlab",
-      "rootUrl": "http://@IP_ADDRESS@:@GITLAB_PORT@/",
-      "adminUrl": "http://@IP_ADDRESS@:@GITLAB_PORT@/users/auth/saml/callback",
+      "rootUrl": "@GITLAB_URL@/",
+      "adminUrl": "@GITLAB_URL@/users/auth/saml/callback",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://@IP_ADDRESS@:@GITLAB_PORT@/*"
+        "@GITLAB_URL@/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -404,15 +404,15 @@
     {
       "id": "a7cc34cf-3e9c-4bb8-affe-7c18ca285326",
       "clientId": "growi",
-      "rootUrl": "http://@IP_ADDRESS@:@GROWI_PORT@/",
-      "adminUrl": "http://@IP_ADDRESS@:@GROWI_PORT@/passport/saml/callback",
+      "rootUrl": "@GROWI_URL@/",
+      "adminUrl": "@GROWI_URL@/passport/saml/callback",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://@IP_ADDRESS@:@GROWI_PORT@/*"
+        "@GROWI_URL@/*"
       ],
       "webOrigins": [],
       "notBefore": 0,

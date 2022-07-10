@@ -47,13 +47,13 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - Environment variable `_KEYCLOAK_GITL_FP` for GitLab
 
         ```bash
-        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "-----BEGIN CERTIFICATE-----\n%s\n-----END CERTIFICATE-----\n" $(cat) | openssl x509 -sha1 -fingerprint -noout | sed -e 's/^.*sha1 Fingerprint=\(.*\)/\1/g' | printf -- "_KEYCLOAK_GITL_FP='%s'\n" $(cat)  >> .env
+        curl --silent https://192.168.77.48:31443/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "-----BEGIN CERTIFICATE-----\n%s\n-----END CERTIFICATE-----\n" $(cat) | openssl x509 -sha1 -fingerprint -noout | sed -e 's/^.*sha1 Fingerprint=\(.*\)/\1/g' | printf -- "_KEYCLOAK_GITL_FP='%s'\n" $(cat)  >> .env
         ```
     
     - Environment variable `_KEYCLOAK_WIKI_PEM` for Growi
 
         ```bash
-        curl --silent http://192.168.77.48:20082/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "_KEYCLOAK_WIKI_PEM='%s'\n" $(cat) >> .env
+        curl --silent https://192.168.77.48:31443/realms/local/protocol/saml/descriptor | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' | printf -- "_KEYCLOAK_WIKI_PEM='%s'\n" $(cat) >> .env
         ```
 
 2. Launch the containers.
@@ -191,13 +191,13 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
                 |---|---|---|
                 |Add Client|Client ID|`growi`|
                 ||Client Protocol|`saml`|
-                ||Client SAML Endpoint |`http://192.168.77.48:20079/passport/saml/callback`|
+                ||Client SAML Endpoint |`https://192.168.77.48:11443/passport/saml/callback`|
 
                 |Section|key|value|
                 |---|---|---|
                 |growi > Settings|Name ID Format|`username`|
-                ||Root URL|`http://192.168.77.48:20079/`|
-                ||Valid Redirect URIs|`http://192.168.77.48:20079/*`|
+                ||Root URL|`https://192.168.77.48:11443/`|
+                ||Valid Redirect URIs|`https://192.168.77.48:11443/*`|
                 ||IDP Initiated SSO URL Name|`growi`|
 
 
@@ -236,7 +236,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
             |File Upload Settings|File Delivery Method (*)|`Internal System Relay`|
             ||Region|`ap-northeast-1`|
             ||Custom endpoint|`growi`|
-            ||Bucket name|`http://192.168.77.48:9000`|
+            ||Bucket name|`https://192.168.77.48:32443`|
             ||Access key ID|`minioadmin`|
             ||Secret access key|`minioadmin-pswd`|
 
@@ -249,30 +249,34 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
         - Create a bucket named `growi` .
 
             ```bash
-            docker run -it --entrypoint=/bin/bash minio/mc:latest -c "/usr/bin/mc config host add minio http://192.168.77.48:9000 minioadmin minioadmin-pswd && /usr/bin/mc mb minio/growi"
+            docker run -it --entrypoint=/bin/bash minio/mc:latest -c "/usr/bin/mc config host add minio https://192.168.77.48:32443 minioadmin minioadmin-pswd && /usr/bin/mc mb minio/growi"
             ```
 
 4. Open in browser.
 
     - Growi
 
-        http://192.168.XXX.YYY:20079
+        https://192.168.77.48:11443
+
+        - Mongo Express (to see growi internal data)
+
+            https://192.168.77.48:36443
 
     - GitLab
 
-        http://192.168.XXX.YYY:20080
+        http://192.168.77.48:20080
 
     - phpLDAPadmin
 
-        http://192.168.XXX.YYY:20081
+        https://192.168.77.48:30443
 
     - Keycloak
 
-        http://192.168.XXX.YYY:20082
+        https://192.168.77.48:31443
 
     - MinIO
 
-        http://192.168.XXX.YYY:9000
+        https://192.168.77.48:33443
 
 ## Thanks and References
 
