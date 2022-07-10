@@ -34,10 +34,12 @@
     cp localhost+2.pem ldap.crt \
     && cp localhost+2.pem ldapadmin.crt \
     && cp localhost+2.pem keycloak.crt \
-    && cp localhost+2.pem minio.crt
+    && cp localhost+2.pem minio.crt \
+    && cp localhost+2.pem growi.crt
 
     cp localhost+2-key.pem ldap.key \
     && cp localhost+2-key.pem ldapadmin.key \
     && cp localhost+2-key.pem keycloak.key \
-    && cp localhost+2-key.pem minio.key
+    && cp localhost+2-key.pem minio.key \
+    && cp localhost+2-key.pem growi.key
     ```

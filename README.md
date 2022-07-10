@@ -233,12 +233,14 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 
             |Section|key|value|
             |---|---|---|
-            |File Upload Settings|File Delivery Method|`Internal System Relay`|
+            |File Upload Settings|File Delivery Method (*)|`Internal System Relay`|
             ||Region|`ap-northeast-1`|
             ||Custom endpoint|`growi`|
             ||Bucket name|`http://192.168.77.48:9000`|
             ||Access key ID|`minioadmin`|
             ||Secret access key|`minioadmin-pswd`|
+
+            (*) File Delivery Method `Redirect` does not work for me.
 
         ![growi-minio](doc/images/growi-minio.png)
 
@@ -296,3 +298,5 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://docs.min.io/docs/deploy-minio-on-docker-compose.html
     - https://docs.min.io/docs/minio-quickstart-guide.html
         - about `MINIO_BROWSER_REDIRECT_URL`
+- [mongo-express](https://hub.docker.com/_/mongo-express)
+- [nginx](https://hub.docker.com/_/nginx)

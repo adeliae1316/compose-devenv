@@ -1,0 +1,47 @@
+# drawio
+server {
+  listen $_DRAWIO_HTTPS_PORT ssl;
+
+  ssl_certificate /certs/growi.crt;
+  ssl_certificate_key /certs/growi.key;
+
+  location / {
+      proxy_pass http://drawio:8080;
+  }
+}
+
+# hackmd
+server {
+  listen $_CODIMD_HTTPS_PORT ssl;
+
+  ssl_certificate /certs/growi.crt;
+  ssl_certificate_key /certs/growi.key;
+
+  location / {
+      proxy_pass http://hackmd:3000;
+  }
+}
+
+# growi
+server {
+  listen $_GROWI_HTTPS_PORT ssl;
+
+  ssl_certificate /certs/growi.crt;
+  ssl_certificate_key /certs/growi.key;
+
+  location / {
+      proxy_pass http://growi:3000;
+  }
+}
+
+# mongo-express
+server {
+  listen $_MONGOEX_HTTPS_PORT ssl;
+
+  ssl_certificate /certs/growi.crt;
+  ssl_certificate_key /certs/growi.key;
+
+  location / {
+      proxy_pass http://mongoex:8081;
+  }
+}
