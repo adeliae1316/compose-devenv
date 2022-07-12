@@ -79,7 +79,7 @@
       "clientId": "${_KEYCLOAK_CLIENT_WIKI}",
       "enabled": true,
       "rootUrl": "${GROWI_URL}/",
-      "adminUrl": "${GROWI_URL}/users/auth/saml/callback",
+      "adminUrl": "${GROWI_URL}/passport/saml/callback",
       "redirectUris": [
         "${GROWI_URL}/*"
       ],
