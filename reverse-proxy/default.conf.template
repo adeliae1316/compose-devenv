@@ -45,3 +45,15 @@ server {
       proxy_pass http://mongoex:8081;
   }
 }
+
+# elastic search
+server {
+  listen $_ELASTICSEARCH_HTTPS_PORT ssl;
+
+  ssl_certificate /certs/growi.crt;
+  ssl_certificate_key /certs/growi.key;
+
+  location / {
+      proxy_pass http://elasticsearch:9200;
+  }
+}

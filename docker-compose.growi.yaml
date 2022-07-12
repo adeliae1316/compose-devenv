@@ -26,7 +26,7 @@ services:
       - SAML_CERT=${_KEYCLOAK_WIKI_PEM}
       # common configuration
       - MONGO_URI=mongodb://mongo:27017/growi
-      - ELASTICSEARCH_URI=http://elasticsearch:9200/growi
+      - ELASTICSEARCH_URI=https://${_HOSTNAME}:${_ELASTICSEARCH_HTTPS_PORT}/growi
       - APP_SITE_URL=https://${_HOSTNAME}:${_GROWI_HTTPS_PORT}
       - FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE=true
       - FILE_UPLOAD=aws
@@ -35,7 +35,7 @@ services:
       - DRAWIO_URI=https://${_HOSTNAME}:${_DRAWIO_HTTPS_PORT}
       - NODE_TLS_REJECT_UNAUTHORIZED=0
     restart: unless-stopped
-    entrypoint: "dockerize -wait tcp://mongo:27017 -wait tcp://elasticsearch:9200 -timeout 60s /docker-entrypoint.sh"
+    entrypoint: "dockerize -wait-retry-interval 5s -wait tcp://mongo:27017 -wait tcp://elasticsearch:9200 -timeout 60s /docker-entrypoint.sh"
     command:
       [
         "yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"
@@ -75,7 +75,7 @@ services:
     restart: unless-stopped
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
-      - ./growi/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ./growi-docker-compose/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     deploy:
       resources:
         limits:
@@ -137,11 +137,13 @@ services:
       - _CODIMD_HTTPS_PORT=${_CODIMD_HTTPS_PORT}
       - _GROWI_HTTPS_PORT=${_GROWI_HTTPS_PORT}
       - _MONGOEX_HTTPS_PORT=${_MONGOEX_HTTPS_PORT}
+      - _ELASTICSEARCH_HTTPS_PORT=${_ELASTICSEARCH_HTTPS_PORT}
     ports:
       - ${_DRAWIO_HTTPS_PORT}:${_DRAWIO_HTTPS_PORT}
       - ${_CODIMD_HTTPS_PORT}:${_CODIMD_HTTPS_PORT}
       - ${_GROWI_HTTPS_PORT}:${_GROWI_HTTPS_PORT}
       - ${_MONGOEX_HTTPS_PORT}:${_MONGOEX_HTTPS_PORT}
+      - ${_ELASTICSEARCH_HTTPS_PORT}:${_ELASTICSEARCH_HTTPS_PORT}
 
 networks:
   default:
