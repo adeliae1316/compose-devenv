@@ -15,6 +15,7 @@ services:
       - keycloak
     environment:
       # saml configutation
+      - SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS=true
       - SAML_ENABLED=true
       - SAML_ENTRY_POINT=${_KEYCLOAK_WIKI_URL}
       - SAML_ISSUER=${_KEYCLOAK_CLIENT_WIKI}
