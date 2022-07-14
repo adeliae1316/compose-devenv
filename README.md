@@ -283,6 +283,7 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
 - [gitlab/gitlab-ce](https://hub.docker.com/r/gitlab/gitlab-ce)
     - https://docs.gitlab.com/ee/install/docker.html
     - https://docs.gitlab.com/ee/integration/saml.html
+    - https://docs.gitlab.com/omnibus/settings/nginx.html#change-the-default-port-and-the-ssl-certificate-locations
 - [osixia/phpldapadmin](https://hub.docker.com/r/osixia/phpldapadmin)
 - [osixia/openldap](https://hub.docker.com/r/osixia/openldap)
 - [quay.io/keycloak/keycloak](https://quay.io/repository/keycloak/keycloak)
@@ -290,9 +291,11 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://www.keycloak.org/server/containers
     - https://www.keycloak.org/guides#server
     - https://stackoverflow.com/a/72759904
+    - https://www.keycloak.org/server/importExport
     - https://access.redhat.com/documentation/en-us/red_hat_single_sign-on/7.1/html/server_administration_guide/admin_cli
 - [weseek/growi-docker-compose](https://github.com/weseek/growi-docker-compose.git)
     - https://docs.growi.org/en/admin-guide/admin-cookbook/env-vars.html
+    - https://docs.growi.org/en/dev/tips/logger.html
 - [hackmdio/hackmd](https://hub.docker.com/r/hackmdio/hackmd)
     - https://github.com/weseek/growi-docker-compose/tree/master/examples/integrate-with-hackmd
     - https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html
@@ -302,6 +305,8 @@ Compose file to launch GitLab and Growi with Keycloak on the local machine.
     - https://docs.min.io/docs/deploy-minio-on-docker-compose.html
     - https://docs.min.io/docs/minio-quickstart-guide.html
         - about `MINIO_BROWSER_REDIRECT_URL`
+- [minio/mc](https://hub.docker.com/r/minio/mc)
+    - https://docs.min.io/docs/minio-client-complete-guide.html#mb
 - [mongo-express](https://hub.docker.com/_/mongo-express)
 - [nginx](https://hub.docker.com/_/nginx)
 - [dockerize](https://hub.docker.com/r/jwilder/dockerize)

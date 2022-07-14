@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
 
-  web:
+  gitlab:
     image: 'gitlab/gitlab-ce:latest'
     container_name: gitlab-ce
     environment:
@@ -11,10 +11,13 @@ services:
         # fix root password
         gitlab_rails['initial_root_password'] = '${_GITLAB_ROOT_PASSWORD}'
         # enable frontpage
-        external_url 'http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}'
-        nginx['listen_port'] = 80
+        external_url 'https://${_HOSTNAME}:${_GITLAB_HTTPS_PORT}'
+        nginx['listen_port'] = 443
+        nginx['redirect_http_to_https'] = true
+        nginx['ssl_certificate'] = "/etc/gitlab/ssl/${_HOSTNAME}.crt"
+        nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/${_HOSTNAME}.key"
         # enable pages
-        pages_external_url 'http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}'
+        pages_external_url 'https://${_HOSTNAME}:${_GITLAB_HTTPS_PORT}'
         gitlab_pages['enable'] = true
         # enable lfs
         gitlab_rails['lfs_enabled'] = true
@@ -27,7 +30,7 @@ services:
             name: "saml",
             label: "Keycloak", # optional label for login button, defaults to "Saml"
             args: {
-              assertion_consumer_service_url: "http://${_HOSTNAME}:${_GITLAB_HTTP_PORT}/users/auth/saml/callback",
+              assertion_consumer_service_url: "https://${_HOSTNAME}:${_GITLAB_HTTPS_PORT}/users/auth/saml/callback",
               idp_cert_fingerprint: "${_KEYCLOAK_GITL_FP}",
               idp_sso_target_url: "${_KEYCLOAK_GITL_URL}",
               issuer: "${_KEYCLOAK_CLIENT_GITL}",
@@ -38,13 +41,15 @@ services:
         # Add any other gitlab.rb configuration here, each on its own line
     restart: unless-stopped
     ports:
-      - '${_GITLAB_HTTP_PORT}:80'
+      - '${_GITLAB_HTTPS_PORT}:443'
       - '${_GITLAB_SSH_PORT}:22'
     volumes:
       - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
       - gitlab_data:/var/opt/gitlab
       - ./gitlab/entrypoint.sh:/code/entrypoint.sh:ro
+      - ./certs/readonly.crt:/etc/gitlab/ssl/${_HOSTNAME}.crt:ro
+      - ./certs/readonly.key:/etc/gitlab/ssl/${_HOSTNAME}.key:ro
     entrypoint: /code/entrypoint.sh
     shm_size: '256m'
     external_links:
