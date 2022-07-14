@@ -43,6 +43,18 @@ services:
       ]
     volumes:
       - growi_data:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "curl --silent --fail --output /dev/null http://localhost:3000 || exit 1"
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 600s
 
   mongo:
     image: mongo:4.4
@@ -81,6 +93,18 @@ services:
       resources:
         limits:
           memory: 512m
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "curl --silent --fail --output /dev/null http://localhost:9200 || exit 1"
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 600s
 
   hackmd:
     build:
@@ -102,6 +126,18 @@ services:
       - ./growi/codimd/config.json:/codimd/config.json:ro
     depends_on:
       - mariadb
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "curl --silent --fail --output /dev/null http://localhost:3000 || exit 1"
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 600s
 
   mariadb:
     image: mariadb:10.3
@@ -120,6 +156,18 @@ services:
     image: jgraph/drawio:latest
     container_name: drawio
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "curl --silent --fail --output /dev/null http://localhost:8080 || exit 1"
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 600s
 
   reverseproxy:
     image: nginx:latest

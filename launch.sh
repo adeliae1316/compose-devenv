@@ -10,22 +10,30 @@ set +o allexport
 
 # Keycloak configuration (pre launch)
 
-python3 "${CURRENT_DIR}"/keycloak/generate_realm.py
+(
+    mkdir -p "${CURRENT_DIR}"/temp && cd "${CURRENT_DIR}"/temp
+    python3 -m pip install python-dotenv --target "${CURRENT_DIR}"/temp &> /dev/null
+    PYTHONPATH="${PYTHONPATH}:${CURRENT_DIR}/temp" python3 "${CURRENT_DIR}"/keycloak/generate_realm.py \
+        && echo 'import.json for keycloak generated!!'
+    PYTHONPATH="${PYTHONPATH}:${CURRENT_DIR}/temp" python3 -m pip uninstall python-dotenv --yes &> /dev/null
+    cd "${CURRENT_DIR}" && rm -r "${CURRENT_DIR}"/temp
+)
 
 # Launch LDAP and Keycloak
 
-docker-compose \
-    -f "${CURRENT_DIR}"/docker-compose.auth.yaml \
-    up --detach
+echo Starting Keycloak...
+echo
 
-docker run --network internal_sso -it jwilder/dockerize \
-    -wait-retry-interval 5s \
-    -wait tcp://keycloak:8443 \
-    -timeout 60s
+docker compose \
+    -f "${CURRENT_DIR}"/docker-compose.auth.yaml \
+    up --detach --wait
+
+echo
+echo Keycloak started!!
 
 # LDAP configuration
 
-docker exec -it openldap ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/init.ldif -c
+docker exec -it openldap ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/init.ldif -c &> /dev/null
 
 # Keycloak configuration (post launch)
 
@@ -49,17 +57,17 @@ curl --capath "${CURRENT_DIR}"/certs/rootCA.pem --silent "${_KEYCLOAK_URL}"/real
     | sed -e 's/^.*<ds:X509Certificate>\(.*\)<\/ds:X509Certificate>.*$/\1/g' \
     | printf -- "_KEYCLOAK_WIKI_PEM='%s'\n" $(cat) >> "${CURRENT_DIR}"/.env
 
-# Launch minio
+# Launch MinIO
 
-docker-compose \
+echo Starting MinIO...
+echo
+
+docker compose \
     -f "${CURRENT_DIR}"/docker-compose.minio.yaml \
-    up --detach
+    up --detach --wait
 
-docker run --network internal_minio -it jwilder/dockerize \
-    -wait-retry-interval 5s \
-    -wait tcp://minio1:9000 -wait tcp://minio2:9000 -wait tcp://minio3:9000 -wait tcp://minio4:9000 \
-    -wait tcp://minio1:9001 -wait tcp://minio2:9001 -wait tcp://minio3:9001 -wait tcp://minio4:9001 \
-    -timeout 60s
+echo
+echo MinIO started!!
 
 # MinIO configuration
 
@@ -67,43 +75,50 @@ docker run --network internal_minio -it \
     --entrypoint=/bin/bash minio/mc:latest \
     -c "/usr/bin/mc config host add minio http://minio1:9000 minioadmin minioadmin-pswd && /usr/bin/mc mb --ignore-existing minio/growi"
 
-# Launch growi
+# Launch Growi
 
-docker-compose \
+echo Starting Growi...
+echo
+
+docker compose \
     -f "${CURRENT_DIR}"/docker-compose.growi.yaml \
-    up --build --detach
+    up --build --detach # --wait
 
+# --wait option cannot detect connection well. So wait with dockerize.
 docker run --network internal_wiki -it jwilder/dockerize \
-    -wait-retry-interval 10s \
+    -wait-retry-interval 20s \
     -wait tcp://growi:3000 \
     -wait tcp://drawio:8080 \
     -wait tcp://hackmd:3000 \
     -wait tcp://elasticsearch:9200 \
-    -timeout 120s
-
-# logout ps
+    -timeout 600s
 
 echo
+echo Growi started!!
+
+# Launch GitLab
+
+echo Starting GitLab...
 echo
 
-docker-compose \
-    -f "${CURRENT_DIR}"/docker-compose.auth.yaml \
-    -f "${CURRENT_DIR}"/docker-compose.minio.yaml \
-    -f "${CURRENT_DIR}"/docker-compose.growi.yaml \
+docker compose \
     -f "${CURRENT_DIR}"/docker-compose.gitlab.yaml \
-    ps
+    up --detach # --wait
+
+# --wait option cannot detect connection well. So wait with dockerize.
+docker run --network internal_git -it jwilder/dockerize \
+    -wait-retry-interval 20s \
+    -wait tcp://gitlab:443 \
+    -timeout 600s
+
+echo
+echo GitLab started!!
 
 exit 0
 
-# WIP
-
-docker-compose \
-    -f "${CURRENT_DIR}"/docker-compose.gitlab.yaml \
-    up --detach
-
 docker run -p 9000:9000 -p 9443:9443 \
     --name portainer \
-    --restart=always \
+    --restart=unless-stopped \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v portainer_data:/data \
     portainer/portainer-ce:latest
