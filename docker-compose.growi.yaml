@@ -126,8 +126,8 @@ services:
     container_name: reverseproxy
     volumes:
       - ./reverse-proxy:/etc/nginx/templates:ro
-      - ./certs/growi.crt:/certs/growi.crt:ro
-      - ./certs/growi.key:/certs/growi.key:ro
+      - ./certs/readonly.crt:/certs/growi.crt:ro
+      - ./certs/readonly.key:/certs/growi.key:ro
     depends_on:
       - drawio
       - hackmd
