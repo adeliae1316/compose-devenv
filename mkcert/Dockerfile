@@ -1,12 +1,10 @@
 FROM golang:bullseye
 LABEL maintainer adeliae1316 <knsak.ug487@gmail.com>
 
-# install dependencies
+# install libraries
 RUN apt-get update \
     && apt-get install -y \
     git \
-    gosu \
-    sudo \
     libnss3-tools \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -18,3 +16,7 @@ RUN git clone https://github.com/adeliae1316/mkcert.git \
     && mv mkcert /usr/local/bin \
     && cd .. \
     && rm -r mkcert
+
+# purge unneed libraries
+RUN apt-get purge -y git \
+    && apt-get autoremove -y
