@@ -24,9 +24,9 @@ services:
       - openldap_ldap:/var/lib/ldap
       - openldap_slapd:/etc/ldap/slapd.d
       - ./openldap/init.ldif:/tmp/init.ldif:ro
-      - ./certs/ldap.crt:/container/service/slapd/assets/certs/ldap.crt:rw
-      - ./certs/ldap.key:/container/service/slapd/assets/certs/ldap.key:rw
-      - ./certs/rootCA.pem:/container/service/slapd/assets/certs/ca.crt:rw
+      - ./mkcert/certs/ldap.crt:/container/service/slapd/assets/certs/ldap.crt:rw
+      - ./mkcert/certs/ldap.key:/container/service/slapd/assets/certs/ldap.key:rw
+      - ./mkcert/certs/rootCA.pem:/container/service/slapd/assets/certs/ca.crt:rw
 
   phpldapadmin:
     image: osixia/phpldapadmin:latest
@@ -40,9 +40,9 @@ services:
     depends_on:
       - openldap
     volumes:
-      - ./certs/ldapadmin.crt:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.crt:rw
-      - ./certs/ldapadmin.key:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.key:rw
-      - ./certs/rootCA.pem:/container/service/phpldapadmin/assets/apache2/certs/ca.crt:rw
+      - ./mkcert/certs/ldapadmin.crt:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.crt:rw
+      - ./mkcert/certs/ldapadmin.key:/container/service/phpldapadmin/assets/apache2/certs/phpldapadmin.key:rw
+      - ./mkcert/certs/rootCA.pem:/container/service/phpldapadmin/assets/apache2/certs/ca.crt:rw
 
   postgres:
     image: postgres:latest
@@ -76,8 +76,8 @@ services:
       - postgres
       - openldap
     volumes:
-      - ./certs/keycloak.crt:/etc/x509/https/tls.crt:rw
-      - ./certs/keycloak.key:/etc/x509/https/tls.key:rw
+      - ./mkcert/certs/keycloak.crt:/etc/x509/https/tls.crt:rw
+      - ./mkcert/certs/keycloak.key:/etc/x509/https/tls.key:rw
       - ./keycloak/import.json:/opt/keycloak/data/import/import.json:ro
     healthcheck:
       test:

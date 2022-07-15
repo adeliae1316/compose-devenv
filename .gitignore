@@ -1,3 +1,5 @@
 .env
-/certs/
+/mkcert/certs/
+/mkcert/rootcerts/
+/mkcert/usercerts/
 /keycloak/import.json
