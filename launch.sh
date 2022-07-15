@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-trap 'exit 1' SIGINT
-
 CURRENT_DIR=$(cd $(dirname $0); pwd)
 
 set -o allexport
@@ -10,14 +8,18 @@ set +o allexport
 
 # Keycloak configuration (pre launch)
 
-(
-    mkdir -p "${CURRENT_DIR}"/temp && cd "${CURRENT_DIR}"/temp
-    python3 -m pip install python-dotenv --target "${CURRENT_DIR}"/temp &> /dev/null
-    PYTHONPATH="${PYTHONPATH}:${CURRENT_DIR}/temp" python3 "${CURRENT_DIR}"/keycloak/generate_realm.py \
-        && echo 'import.json for keycloak generated!!'
-    PYTHONPATH="${PYTHONPATH}:${CURRENT_DIR}/temp" python3 -m pip uninstall python-dotenv --yes &> /dev/null
-    cd "${CURRENT_DIR}" && rm -r "${CURRENT_DIR}"/temp
-)
+echo Generating Keycloak config...
+echo
+
+docker run \
+    --env _UID=${UID} --volume "${CURRENT_DIR}/keycloak:/work" --workdir /work \
+    python:latest \
+    bash -c 'python -m pip install python-dotenv &> /dev/null \
+            && python generate_realm.py \
+            && chown ${_UID}:${_UID} import.json'
+
+echo
+echo Keycloak config generated!!
 
 # Launch LDAP and Keycloak
 
