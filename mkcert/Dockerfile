@@ -17,6 +17,6 @@ RUN git clone https://github.com/adeliae1316/mkcert.git \
     && cd .. \
     && rm -r mkcert
 
-# purge unneed libraries
+# purge used libraries
 RUN apt-get purge -y git \
     && apt-get autoremove -y
