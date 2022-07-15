@@ -11,7 +11,7 @@ set +o allexport
 echo Generating Keycloak config...
 echo
 
-docker run \
+docker run --rm \
     --env _UID=${UID} --volume "${CURRENT_DIR}/keycloak:/work" --workdir /work \
     python:latest \
     bash -c 'python -m pip install python-dotenv &> /dev/null \
@@ -73,7 +73,7 @@ echo MinIO started!!
 
 # MinIO configuration
 
-docker run --network internal_minio -it \
+docker run --rm --network internal_minio -it \
     --entrypoint=/bin/bash minio/mc:latest \
     -c "/usr/bin/mc config host add minio http://minio1:9000 minioadmin minioadmin-pswd && /usr/bin/mc mb --ignore-existing minio/growi"
 
@@ -87,7 +87,7 @@ docker compose \
     up --build --detach # --wait
 
 # --wait option cannot detect connection well. So wait with dockerize.
-docker run --network internal_wiki -it jwilder/dockerize \
+docker run --rm --network internal_wiki -it jwilder/dockerize \
     -wait-retry-interval 20s \
     -wait tcp://growi:3000 \
     -wait tcp://drawio:8080 \
@@ -108,7 +108,7 @@ docker compose \
     up --detach # --wait
 
 # --wait option cannot detect connection well. So wait with dockerize.
-docker run --network internal_git -it jwilder/dockerize \
+docker run --rm --network internal_git -it jwilder/dockerize \
     -wait-retry-interval 20s \
     -wait tcp://gitlab:443 \
     -timeout 600s
@@ -118,7 +118,7 @@ echo GitLab started!!
 
 exit 0
 
-docker run -p 9000:9000 -p 9443:9443 \
+docker run --rm -p 9000:9000 -p 9443:9443 \
     --name portainer \
     --restart=unless-stopped \
     -v /var/run/docker.sock:/var/run/docker.sock \
