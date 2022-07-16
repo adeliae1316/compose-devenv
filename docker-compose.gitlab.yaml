@@ -48,8 +48,8 @@ services:
       - gitlab_logs:/var/log/gitlab
       - gitlab_data:/var/opt/gitlab
       - ./gitlab/entrypoint.sh:/code/entrypoint.sh:ro
-      - ./mkcert/certs/readonly.crt:/etc/gitlab/ssl/${_HOSTNAME}.crt:ro
-      - ./mkcert/certs/readonly.key:/etc/gitlab/ssl/${_HOSTNAME}.key:ro
+      - ./mkcert/certs/service.crt:/etc/gitlab/ssl/${_HOSTNAME}.crt:ro
+      - ./mkcert/certs/service.key:/etc/gitlab/ssl/${_HOSTNAME}.key:ro
     entrypoint: /code/entrypoint.sh
     shm_size: '256m'
     external_links:

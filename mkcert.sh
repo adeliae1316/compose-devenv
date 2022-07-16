@@ -26,27 +26,14 @@ docker run --rm \
 
 (
     DST_DIR="${CURRENT_DIR}/mkcert/certs"
-
     mkdir -p "${DST_DIR}"
 
-    cp "${CURRENT_DIR}/mkcert/rootcerts/rootCA.pem" "${DST_DIR}/readonly-root.crt"
+    cp "${CURRENT_DIR}/mkcert/rootcerts/rootCA.pem" "${DST_DIR}/root.crt"
+    chmod 600 "${CURRENT_DIR}/mkcert/rootcerts/rootCA-key.pem" # to be able to copy
+    cp "${CURRENT_DIR}/mkcert/rootcerts/rootCA-key.pem" "${DST_DIR}/root.key"
 
-    chmod 600 "${CURRENT_DIR}/mkcert/rootcerts/rootCA-key.pem"
-    cp "${CURRENT_DIR}/mkcert/rootcerts/rootCA-key.pem" "${DST_DIR}/readonly-root.key"
-    # chmod 400 "${CURRENT_DIR}/mkcert/rootcerts/rootCA-key.pem" "${DST_DIR}/readonly-root.key"
-
-    SRC_CRT="${CURRENT_DIR}/mkcert/usercerts/localhost+2.pem"
-    SRC_KEY="${CURRENT_DIR}/mkcert/usercerts/localhost+2-key.pem"
-
-    cp "${SRC_CRT}" "${DST_DIR}/ldap.crt" \
-        && cp "${SRC_CRT}" "${DST_DIR}/ldapadmin.crt" \
-        && cp "${SRC_CRT}" "${DST_DIR}/keycloak.crt" \
-        && cp "${SRC_CRT}" "${DST_DIR}/readonly.crt"
-
-    cp "${SRC_KEY}" "${DST_DIR}/ldap.key" \
-        && cp "${SRC_KEY}" "${DST_DIR}/ldapadmin.key" \
-        && cp "${SRC_KEY}" "${DST_DIR}/keycloak.key" \
-        && cp "${SRC_KEY}" "${DST_DIR}/readonly.key"
+    cp "${CURRENT_DIR}/mkcert/usercerts/localhost+2.pem" "${DST_DIR}/service.crt"
+    cp "${CURRENT_DIR}/mkcert/usercerts/localhost+2-key.pem" "${DST_DIR}/service.key"
 )
 
 exit 0
