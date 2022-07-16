@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 # load .env
 
 _PY_DIR=os.path.dirname(__file__)
-load_dotenv(os.path.join(_PY_DIR, '../.env'))
+load_dotenv(os.path.join(_PY_DIR, '.env'))
 
 def getEnv(key):
   return os.environ.get(key, '')
